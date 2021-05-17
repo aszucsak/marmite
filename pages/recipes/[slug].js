@@ -1,6 +1,7 @@
 import { createClient } from 'contentful';
 import Image from 'next/image';
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import Skeleton from '../../components/Skeleton';
 
 const client = createClient({
   space: process.env.CONTENTFUL_SPACE_ID,
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
@@ -37,7 +38,10 @@ export async function getStaticProps({ params: { slug } }) {
 }
 
 export default function RecipeDetails({ recipe }) {
-  console.log(recipe.fields);
+  if (!recipe) {
+    return <Skeleton />;
+  }
+
   const { featuredImage, ingredients, method, title, cookingTime } =
     recipe.fields;
   return (
